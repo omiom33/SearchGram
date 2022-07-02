@@ -37,8 +37,7 @@ class Mongo:
         self.client.close()
 
     def insert(self, doc: "dict"):
-        resp = self.col.insert_one(doc)
-        return resp
+        return self.col.insert_one(doc)
 
     @staticmethod
     def __clean_user(user: "str"):

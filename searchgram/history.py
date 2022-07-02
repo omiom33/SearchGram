@@ -49,9 +49,9 @@ class HistoryImport:
         total = current = 0
         for i in data["chats"]["list"]:
             total += len(i["messages"])
+        template = "[{}](tg://user?id={}) to [{}](tg://user?id={})"
         for chat in data["chats"]["list"]:
             self.__edit_text(f"Importing... {current}/{total}")
-            template = "[{}](tg://user?id={}) to [{}](tg://user?id={})"
             opposite_name = chat.get("name", chat["type"])
             opposite_uid = chat["id"]
             for msg in chat["messages"]:
@@ -95,4 +95,4 @@ class HistoryImport:
         try:
             self.__runner()
         except Exception:
-            self.__bm.edit_text("❌Import error\n\n{}".format(traceback.format_exc()))
+            self.__bm.edit_text(f"❌Import error\n\n{traceback.format_exc()}")

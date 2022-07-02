@@ -95,9 +95,11 @@ def send_search_results(chat_id, results):
         "Next Page",
         callback_data="n|0"  # current index
     )
-    final = ""
-    for result in results:
-        final += "{} on {}\n`{}`\r".format(result["mention"], result['date'], result['text'])
+    final = "".join(
+        f"""{result["mention"]} on {result['date']}\n`{result['text']}`\r"""
+        for result in results
+    )
+
     list_data = final.split("\r")
     length = 1000
     group_data = []
@@ -113,18 +115,11 @@ def send_search_results(chat_id, results):
 
     if not group_data:
         group_data = [element]
-    if len(group_data) > 1:
-        markup = InlineKeyboardMarkup(
-            [
-                [
-                    next_button
-                ]
-            ]
-        )
-    else:
-        markup = None
+    markup = (
+        InlineKeyboardMarkup([[next_button]]) if len(group_data) > 1 else None
+    )
 
-    hint = "**Total {} pages.**\n\n".format(len(group_data))
+    hint = f"**Total {len(group_data)} pages.**\n\n"
     bot_msg = app.send_message(chat_id, hint + group_data[0], parse_mode=enums.ParseMode.MARKDOWN, reply_markup=markup)
     tgdb.insert_history({"message_id": bot_msg.id, "messages": group_data})
 
